@@ -1,5 +1,4 @@
 <script>
-	// Array mapping out the unique episode subtitles/names inside the archive.org paths
 	const episodes = [
 		"Mr.%20Big", "Diplomat%27s%20Daughter", "School%20Days", "Our%20Man%20in%20Toyland",
 		"Now%20You%20See%20Him...%20Now%20You%20Don%27t", "Washington%204%2C%20Indians%203",
@@ -16,18 +15,19 @@
 	let player;
 	let currentLinkElement = null;
 
-	// FIXED: Build the grid inside raw HTML tables using a low-level programmatic loop
-	function buildPlaylistTable(tableId, isWebOptimised) {
-		const table = document.getElementById(tableId);
-		let row;
+	function buildPlaylistTable(tbodyId, isWebOptimised) {
+		const tbody = document.getElementById(tbodyId);
+		let tr = null;
 		
 		episodes.forEach((epName, index) => {
-			// Break into rows of 5 cells each
+			// Create standard <tr> nodes manually to ensure legacy compatibility
 			if (index % 5 === 0) {
-				row = table.insertRow();
+				tr = document.createElement('tr');
+				tbody.appendChild(tr);
 			}
 			
-			const cell = row.insertCell();
+			// Create standard <td> nodes explicitly
+			const td = document.createElement('td');
 			const epNum = String(index + 1).padStart(2, '0');
 			const a = document.createElement('a');
 			
@@ -38,8 +38,6 @@
 			const suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
 			const fullUrl = `https://archive.org/download/get-smart/Get%20Smart%20S01E${epNum}%20%28${epName}%29${suffix}`;
 			a.setAttribute('data-video', fullUrl);
-			
-			// Track standard unique indices to simplify sequential playback triggers
 			a.setAttribute('data-index', index);
 			a.setAttribute('data-type', isWebOptimised ? 'web' : 'orig');
 
@@ -48,7 +46,8 @@
 				playVideo(this);
 			});
 
-			cell.appendChild(a);
+			td.appendChild(a);
+			tr.appendChild(td);
 		});
 	}
 
@@ -65,15 +64,12 @@
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	// Initialize elements sequentially only when the browser signals page completion
 	window.addEventListener('DOMContentLoaded', function() {
 		player = document.getElementById('tv-player');
 		
-		// Build the table structural elements out of live interface layout operations
 		buildPlaylistTable('table-web', true);
 		buildPlaylistTable('table-orig', false);
 
-		// Handle sequential playlist auto-play tracking using explicit direct attributes
 		player.addEventListener('ended', function() {
 			if (!currentLinkElement) return;
 			
@@ -81,7 +77,6 @@
 			const currentType = currentLinkElement.getAttribute('data-type');
 			const nextIndex = currentIndex + 1;
 			
-			// Search across the matching database columns to trigger sequential autoplay swaps
 			const nextLink = document.querySelector(`.video-link[data-type="${currentType}"][data-index="${nextIndex}"]`);
 			if (nextLink) {
 				playVideo(nextLink);
@@ -90,14 +85,12 @@
 	});
 </script>
 <style>
-	/* Raw layout styles targeting ancient smart TV browser engines safely */
 	body { background: #121212; color: #ffffff; font-family: sans-serif; text-align: center; margin: 0; padding: 10px; }
 	h1 { color: #e74c3c; margin: 5px 0; font-size: 1.8rem; }
 	.subtitle { color: #888; margin: 0 0 15px 0; font-size: 1rem; }
 	.player-container { max-width: 700px; margin: 0 auto 15px auto; background: #000000; border: 2px solid #333; }
 	video { display: block; width: 100%; height: auto; }
 	
-	/* Low-overhead legacy table layouts replace high-overhead columns flex calculations */
 	table { width: 100%; max-width: 430px; margin: 0 auto 20px auto; border-collapse: separate; border-spacing: 5px; }
 	th { color: #3498db; padding-bottom: 5px; font-size: 1.1rem; border-bottom: 1px solid #333; }
 	td { width: 20%; padding: 0; }
@@ -106,7 +99,6 @@
 		display: block; color: #ffffff; text-decoration: none; background: #2a2a2a; 
 		padding: 12px 0; border-radius: 4px; font-weight: bold; font-size: 1.1rem; text-align: center;
 	}
-	/* Static hover focus anchors to capture remote control arrow targets instantly */
 	.video-link:focus, .video-link:hover { background: #3498db; outline: none; color: #ffffff; }
 	.video-link.active { background: #2ecc71 !important; color: #000000 !important; }
 </style>
@@ -118,13 +110,13 @@
 	<video id="tv-player" controls preload="none" src=""></video>
 </div>
 
-<!-- COLUMN A: WEB OPTIMISED TABLE -->
+<!-- COLUMN A -->
 <table>
 	<thead><tr><th colspan="5">Web Optimised</th></tr></thead>
 	<tbody id="table-web"></tbody>
 </table>
 
-<!-- COLUMN B: ORIGINAL RESOLUTION TABLE -->
+<!-- COLUMN B -->
 <table>
 	<thead><tr><th colspan="5">Original Resolution</th></tr></thead>
 	<tbody id="table-orig"></tbody>
