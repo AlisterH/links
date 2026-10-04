@@ -19,10 +19,9 @@
 		var tbody = document.getElementById(tbodyId);
 		if (!tbody) return;
 		
-		tbody.innerHTML = ""; // Clear fallback warning text
+		tbody.innerHTML = ""; 
 		var tr = null;
 		
-		// FIXED: Swapped out modern unsupported .forEach for a standard low-level for loop
 		for (var i = 0; i < episodes.length; i++) {
 			var epName = episodes[i];
 			
@@ -67,9 +66,15 @@
 		var rootDomain = "https://" + "archive.org/";
 		var fullTargetUrl = rootDomain + currentLinkElement.getAttribute('data-video');
 		
+		// Pass source URL data to the video window frame instantly
 		player.src = fullTargetUrl;
 		player.load();
-		player.play();
+		
+		// FIXED: Wait exactly 300ms for hardware initialization protocols before starting the video engine
+		setTimeout(function() {
+			player.play();
+		}, 300);
+		
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
@@ -86,7 +91,6 @@
 			var currentType = currentLinkElement.getAttribute('data-type');
 			var nextIndex = currentIndex + 1;
 			
-			// FIXED: Concatenated the string manually for old querySelector implementation versions
 			var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
 			if (nextLink) {
 				playVideo(nextLink);
