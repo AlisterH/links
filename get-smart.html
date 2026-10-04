@@ -1,40 +1,3 @@
-<style>
-	body { font-family: sans-serif; background: #121212; color: #fff; padding: 20px; margin: 0; }
-	h1 { text-align: center; color: #e74c3c; margin: 5px 0; }
-	.subtitle { text-align: center; color: #888; margin: 0 0 20px 0; }
-	.player-container { max-width: 800px; margin: 0 auto 20px auto; background: #000; border: 2px solid #333; border-radius: 6px; overflow: hidden; }
-	video { display: block; width: 100%; height: auto; }
-	.columns-wrapper { display: flex; max-width: 900px; margin: 0 auto; gap: 20px; }
-	.column { flex: 1; background: #1c1c1c; padding: 10px; border-radius: 6px; }
-	.column h3 { margin-top: 0; color: #3498db; border-bottom: 1px solid #333; padding-bottom: 5px; }
-	.playlist { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-	.video-link { display: block; color: #fff; text-decoration: none; padding: 10px 2px; background: #2a2a2a; border-radius: 4px; font-weight: bold; text-align: center; font-size: 1rem; }
-	.video-link:focus, .video-link:hover { background: #3498db; outline: none; }
-	.video-link.active { background: #2ecc71 !important; color: #000 !important; }
-</style>
-
-<h1>GET SMART</h1>
-<p class="subtitle">Season 1 Control Center</p>
-
-<div class="player-container">
-	<video id="tv-player" controls preload="none" src="">
-	</video>
-</div>
-
-<div class="columns-wrapper">
-	<!-- COLUMN A: WEB OPTIMISED -->
-	<div class="column">
-		<h3>Web Optimised</h3>
-		<ul class="playlist" id="list-web"></ul>
-	</div>
-
-	<!-- COLUMN B: ORIGINAL -->
-	<div class="column">
-		<h3>Original</h3>
-		<ul class="playlist" id="list-orig"></ul>
-	</div>
-</div>
-
 <script>
 	// Array mapping out the unique episode subtitles/names inside the archive.org paths
 	const episodes = [
@@ -50,36 +13,43 @@
 		"Ship%20of%20Spies%20-%20Pt2", "Shipment%20to%20Beirut", "The%20Last%20One%20in%20is%20a%20Rotten%20Spy"
 	];
 
-	const player = document.getElementById('tv-player');
+	let player;
 	let currentLinkElement = null;
 
-	// DYNAMIC LINK GENERATOR ENGINE
-	function generateGrid(containerId, isWebOptimised) {
-		const container = document.getElementById(containerId);
-		const fragment = document.createDocumentFragment();
+	// FIXED: Build the grid inside raw HTML tables using a low-level programmatic loop
+	function buildPlaylistTable(tableId, isWebOptimised) {
+		const table = document.getElementById(tableId);
+		let row;
+		
 		episodes.forEach((epName, index) => {
+			// Break into rows of 5 cells each
+			if (index % 5 === 0) {
+				row = table.insertRow();
+			}
+			
+			const cell = row.insertCell();
 			const epNum = String(index + 1).padStart(2, '0');
-			const li = document.createElement('li');
 			const a = document.createElement('a');
 			
 			a.href = "#";
 			a.className = "video-link";
 			a.textContent = `E${epNum}`;
 			
-			// Formulate the base URL dynamically on click rather than serving hardcoded strings
 			const suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
 			const fullUrl = `https://archive.org/download/get-smart/Get%20Smart%20S01E${epNum}%20%28${epName}%29${suffix}`;
 			a.setAttribute('data-video', fullUrl);
+			
+			// Track standard unique indices to simplify sequential playback triggers
+			a.setAttribute('data-index', index);
+			a.setAttribute('data-type', isWebOptimised ? 'web' : 'orig');
 
 			a.addEventListener('click', function(event) {
 				event.preventDefault();
 				playVideo(this);
 			});
 
-			li.appendChild(a);
-			fragment.appendChild(li);
+			cell.appendChild(a);
 		});
-		container.appendChild(fragment);
 	}
 
 	function playVideo(linkElement) {
@@ -95,18 +65,67 @@
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	// Handle sequential playlist auto-play tracking across dynamically built elements
-	player.addEventListener('ended', function() {
-		if (!currentLinkElement) return;
-		const currentLi = currentLinkElement.closest('li');
-		const nextLi = currentLi.nextElementSibling;
-		if (nextLi) {
-			const nextLink = nextLi.querySelector('.video-link');
-			if (nextLink) playVideo(nextLink);
-		}
-	});
+	// Initialize elements sequentially only when the browser signals page completion
+	window.addEventListener('DOMContentLoaded', function() {
+		player = document.getElementById('tv-player');
+		
+		// Build the table structural elements out of live interface layout operations
+		buildPlaylistTable('table-web', true);
+		buildPlaylistTable('table-orig', false);
 
-	// Initialize lists immediately upon background engine startup
-	generateGrid('list-web', true);
-	generateGrid('list-orig', false);
+		// Handle sequential playlist auto-play tracking using explicit direct attributes
+		player.addEventListener('ended', function() {
+			if (!currentLinkElement) return;
+			
+			const currentIndex = parseInt(currentLinkElement.getAttribute('data-index'), 10);
+			const currentType = currentLinkElement.getAttribute('data-type');
+			const nextIndex = currentIndex + 1;
+			
+			// Search across the matching database columns to trigger sequential autoplay swaps
+			const nextLink = document.querySelector(`.video-link[data-type="${currentType}"][data-index="${nextIndex}"]`);
+			if (nextLink) {
+				playVideo(nextLink);
+			}
+		});
+	});
 </script>
+<style>
+	/* Raw layout styles targeting ancient smart TV browser engines safely */
+	body { background: #121212; color: #ffffff; font-family: sans-serif; text-align: center; margin: 0; padding: 10px; }
+	h1 { color: #e74c3c; margin: 5px 0; font-size: 1.8rem; }
+	.subtitle { color: #888; margin: 0 0 15px 0; font-size: 1rem; }
+	.player-container { max-width: 700px; margin: 0 auto 15px auto; background: #000000; border: 2px solid #333; }
+	video { display: block; width: 100%; height: auto; }
+	
+	/* Low-overhead legacy table layouts replace high-overhead columns flex calculations */
+	table { width: 100%; max-width: 430px; margin: 0 auto 20px auto; border-collapse: separate; border-spacing: 5px; }
+	th { color: #3498db; padding-bottom: 5px; font-size: 1.1rem; border-bottom: 1px solid #333; }
+	td { width: 20%; padding: 0; }
+	
+	.video-link { 
+		display: block; color: #ffffff; text-decoration: none; background: #2a2a2a; 
+		padding: 12px 0; border-radius: 4px; font-weight: bold; font-size: 1.1rem; text-align: center;
+	}
+	/* Static hover focus anchors to capture remote control arrow targets instantly */
+	.video-link:focus, .video-link:hover { background: #3498db; outline: none; color: #ffffff; }
+	.video-link.active { background: #2ecc71 !important; color: #000000 !important; }
+</style>
+
+<h1>GET SMART</h1>
+<p class="subtitle">Season 1 Control Center</p>
+
+<div class="player-container">
+	<video id="tv-player" controls preload="none" src=""></video>
+</div>
+
+<!-- COLUMN A: WEB OPTIMISED TABLE -->
+<table>
+	<thead><tr><th colspan="5">Web Optimised</th></tr></thead>
+	<tbody id="table-web"></tbody>
+</table>
+
+<!-- COLUMN B: ORIGINAL RESOLUTION TABLE -->
+<table>
+	<thead><tr><th colspan="5">Original Resolution</th></tr></thead>
+	<tbody id="table-orig"></tbody>
+</table>
