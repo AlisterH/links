@@ -1,15 +1,16 @@
 <script>
+	// Full original titles restored to fix the broken paths
 	var episodes = [
-		"Mr.%20Big", "Diplomat%27s%20Daughter", "School%20Days", "Our%20Man%20in%20Toyland",
-		"Now%20You%20See%20Him...%20Now%20You%20Don%27t", "Washington%204%2C%20Indians%203",
-		"KAOS%20in%20CONTROL", "The%20Day%20Smart%20Turned%20Chicken", "Satan%20Place",
-		"Our%20Man%20in%20Leotards", "Too%20Many%20Chiefs", "My%20Nephew%20the%20Spy",
-		"Aboard%20the%20Orient%20Express", "Weekend%20Vampire", "Survival%20of%20the%20Fattest",
-		"Double%20Agent", "Kisses%20for%20KAOS", "The%20Dead%20Spy%20Scrawls",
-		"Back%20to%20the%20Old%20Drawing%20Board", "All%20in%20the%20Mind", "Dear%20Diary",
-		"Smart%2C%20the%20Assassin", "I%27m%20Only%20Human", "Stakeout%20on%20Blue%20Mist%20Mountain",
-		"The%20Amazing%20Harry%20Hoo", "Hubert%27s%20Unfinished%20Symphony", "Ship%20of%20Spies%20-%20Pt1",
-		"Ship%20of%20Spies%20-%20Pt2", "Shipment%20to%20Beirut", "The%20Last%20One%20in%20is%20a%20Rotten%20Spy"
+		"Mr. Big", "Diplomat's Daughter", "School Days", "Our Man in Toyland",
+		"Now You See Him... Now You Don't", "Washington 4, Indians 3",
+		"KAOS in CONTROL", "The Day Smart Turned Chicken", "Satan Place",
+		"Our Man in Leotards", "Too Many Chiefs", "My Nephew the Spy",
+		"Aboard the Orient Express", "Weekend Vampire", "Survival of the Fattest",
+		"Double Agent", "Kisses for KAOS", "The Dead Spy Scrawls",
+		"Back to the Old Drawing Board", "All in the Mind", "Dear Diary",
+		"Smart, the Assassin", "I'm Only Human", "Stakeout on Blue Myst Mountain",
+		"The Amazing Harry Hoo", "Hubert's Unfinished Symphony", "Ship of Spies - Pt1",
+		"Ship of Spies - Pt2", "Shipment to Beirut", "The Last One in is a Rotten Spy"
 	];
 
 	var player;
@@ -23,8 +24,6 @@
 		var tr = null;
 		
 		for (var i = 0; i < episodes.length; i++) {
-			var epName = episodes[i];
-			
 			if (i % 5 === 0) {
 				tr = document.createElement('tr');
 				tbody.appendChild(tr);
@@ -40,9 +39,18 @@
 			a.textContent = "E" + epNum;
 			
 			var suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
-			var cleanPath = "download/get-smart/Get%20Smart%20S01E" + epNum + "%20%28" + epName + "%29" + suffix;
 			
-			a.setAttribute('data-video', cleanPath);
+			// Formulate the EXACT unencoded filename matching the Archive.org directory
+			var rawFileName = "Get Smart S01E" + epNum + " (" + episodes[i] + ")" + suffix;
+			
+			// FIXED: Encodes spaces to %20 and brackets to safely pass through the TV's network card
+			var safeEncodedFile = encodeURIComponent(rawFileName)
+				.replace(/%20/g, "%20")  // Keep standard spaces
+				.replace(/\(/g, "%28")   // Safely translate opening brackets
+				.replace(/\)/g, "%29")   // Safely translate closing brackets
+				.replace(/'/g, "%27");   // Safely translate apostrophes
+
+			a.setAttribute('data-video', safeEncodedFile);
 			a.setAttribute('data-index', i);
 			a.setAttribute('data-type', isWebOptimised ? 'web' : 'orig');
 
@@ -63,14 +71,13 @@
 		currentLinkElement = linkElement;
 		currentLinkElement.classList.add('active');
 		
-		var rootDomain = "https://" + "archive.org/";
-		var fullTargetUrl = rootDomain + currentLinkElement.getAttribute('data-video');
+		var fileName = currentLinkElement.getAttribute('data-video');
+		var fullTargetUrl = "https://archive.org" + fileName;
 		
-		// Pass source URL data to the video window frame instantly
 		player.src = fullTargetUrl;
 		player.load();
 		
-		// FIXED: Wait exactly 300ms for hardware initialization protocols before starting the video engine
+		// Short timing delay to ensure legacy TV buffer caches process the media request smoothly
 		setTimeout(function() {
 			player.play();
 		}, 300);
