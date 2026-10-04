@@ -1,5 +1,6 @@
 <script>
-	const episodes = [
+	// Array mapping out the unique episode subtitles/names inside the archive.org paths
+	var episodes = [
 		"Mr.%20Big", "Diplomat%27s%20Daughter", "School%20Days", "Our%20Man%20in%20Toyland",
 		"Now%20You%20See%20Him...%20Now%20You%20Don%27t", "Washington%204%2C%20Indians%203",
 		"KAOS%20in%20CONTROL", "The%20Day%20Smart%20Turned%20Chicken", "Satan%20Place",
@@ -12,32 +13,36 @@
 		"Ship%20of%20Spies%20-%20Pt2", "Shipment%20to%20Beirut", "The%20Last%20One%20in%20is%20a%20Rotten%20Spy"
 	];
 
-	let player;
-	let currentLinkElement = null;
+	var player;
+	var currentLinkElement = null;
 
 	function buildPlaylistTable(tbodyId, isWebOptimised) {
-		const tbody = document.getElementById(tbodyId);
+		var tbody = document.getElementById(tbodyId);
 		if (!tbody) return;
 		
-		tbody.innerHTML = ""; // Clear fallback warning cleanly
-		let tr = null;
+		tbody.innerHTML = ""; // Wipe the warning clean
+		var tr = null;
 		
-		episodes.forEach((epName, index) => {
+		episodes.forEach(function(epName, index) {
 			if (index % 5 === 0) {
 				tr = document.createElement('tr');
 				tbody.appendChild(tr);
 			}
 			
-			const td = document.createElement('td');
-			const epNum = String(index + 1).padStart(2, '0');
-			const a = document.createElement('a');
+			var td = document.createElement('td');
 			
+			// FIXED: Stripped padStart completely out and replaced with plain math padding
+			var trueNum = index + 1;
+			var epNum = (trueNum < 10) ? ("0" + trueNum) : String(trueNum);
+			
+			var a = document.createElement('a');
 			a.href = "#";
 			a.className = "video-link";
-			a.textContent = `E${epNum}`;
+			a.textContent = "E" + epNum;
 			
-			const suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
-			const cleanPath = `download/get-smart/Get%20Smart%20S01E${epNum}%20%28${epName}%29${suffix}`;
+			var suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
+			var cleanPath = "download/get-smart/Get%20Smart%20S01E" + epNum + "%20%28" + epName + "%29" + suffix;
+			
 			a.setAttribute('data-video', cleanPath);
 			a.setAttribute('data-index', index);
 			a.setAttribute('data-type', isWebOptimised ? 'web' : 'orig');
@@ -59,8 +64,8 @@
 		currentLinkElement = linkElement;
 		currentLinkElement.classList.add('active');
 		
-		const rootDomain = "https://" + "archive.org/";
-		const fullTargetUrl = rootDomain + currentLinkElement.getAttribute('data-video');
+		var rootDomain = "https://" + "archive.org/";
+		var fullTargetUrl = rootDomain + currentLinkElement.getAttribute('data-video');
 		
 		player.src = fullTargetUrl;
 		player.load();
@@ -68,7 +73,6 @@
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	// CENTRAL CORE INITIALIZATION ARCHITECTURE
 	function initApp() {
 		player = document.getElementById('tv-player');
 		
@@ -78,18 +82,17 @@
 		player.addEventListener('ended', function() {
 			if (!currentLinkElement) return;
 			
-			const currentIndex = parseInt(currentLinkElement.getAttribute('data-index'), 10);
-			const currentType = currentLinkElement.getAttribute('data-type');
-			const nextIndex = currentIndex + 1;
+			var currentIndex = parseInt(currentLinkElement.getAttribute('data-index'), 10);
+			var currentType = currentLinkElement.getAttribute('data-type');
+			var nextIndex = currentIndex + 1;
 			
-			const nextLink = document.querySelector(`.video-link[data-type="${currentType}"][data-index="${nextIndex}"]`);
+			var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
 			if (nextLink) {
 				playVideo(nextLink);
 			}
 		});
 	}
 
-	// State evaluation condition forces initialization even if the browser fires load events early
 	if (document.readyState === "complete" || document.readyState === "interactive") {
 		initApp();
 	} else {
