@@ -17,8 +17,7 @@
 <p class="subtitle">Season 1 Control Center</p>
 
 <div class="player-container">
-	<video id="tv-player" controls preload="none">
-		<source id="player-source" src="" type="video/mp4">
+	<video id="tv-player" controls preload="none" src="">
 	</video>
 </div>
 
@@ -52,7 +51,6 @@
 	];
 
 	const player = document.getElementById('tv-player');
-	const source = document.getElementById('player-source');
 	let currentLinkElement = null;
 
 	// DYNAMIC LINK GENERATOR ENGINE
@@ -73,7 +71,7 @@
 			const fullUrl = `https://archive.org{epNum}%20%28${epName}%29${suffix}`;
 			a.setAttribute('data-video', fullUrl);
 
-			a.addEventListener('click', function(e) {
+			a.addEventListener('click', function(event) {
 				event.preventDefault();
 				playVideo(this);
 			});
@@ -90,7 +88,7 @@
 		currentLinkElement = linkElement;
 		currentLinkElement.classList.add('active');
 		
-		source.src = currentLinkElement.getAttribute('data-video');
+		player.src = currentLinkElement.getAttribute('data-video');
 		player.load();
 		player.play();
 		window.scrollTo({ top: 0, behavior: 'smooth' });
