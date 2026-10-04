@@ -17,10 +17,9 @@
 
 	function buildPlaylistTable(tbodyId, isWebOptimised) {
 		const tbody = document.getElementById(tbodyId);
+		if (!tbody) return;
 		
-		// Clear out the fallback text warning safely
-		tbody.innerHTML = "";
-		
+		tbody.innerHTML = ""; // Clear fallback warning cleanly
 		let tr = null;
 		
 		episodes.forEach((epName, index) => {
@@ -38,8 +37,6 @@
 			a.textContent = `E${epNum}`;
 			
 			const suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
-			
-			// FIXED: Domain name is stripped out from the baseline parser entirely to prevent security blocks
 			const cleanPath = `download/get-smart/Get%20Smart%20S01E${epNum}%20%28${epName}%29${suffix}`;
 			a.setAttribute('data-video', cleanPath);
 			a.setAttribute('data-index', index);
@@ -62,7 +59,6 @@
 		currentLinkElement = linkElement;
 		currentLinkElement.classList.add('active');
 		
-		// FIXED: Reconstruct the full secure Archive domain only at the millisecond of user activation
 		const rootDomain = "https://" + "archive.org/";
 		const fullTargetUrl = rootDomain + currentLinkElement.getAttribute('data-video');
 		
@@ -72,7 +68,8 @@
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	window.addEventListener('load', function() {
+	// CENTRAL CORE INITIALIZATION ARCHITECTURE
+	function initApp() {
 		player = document.getElementById('tv-player');
 		
 		buildPlaylistTable('table-web', true);
@@ -90,7 +87,14 @@
 				playVideo(nextLink);
 			}
 		});
-	});
+	}
+
+	// State evaluation condition forces initialization even if the browser fires load events early
+	if (document.readyState === "complete" || document.readyState === "interactive") {
+		initApp();
+	} else {
+		window.addEventListener('load', initApp);
+	}
 </script>
 
 <style>
