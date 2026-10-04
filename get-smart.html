@@ -1,17 +1,18 @@
 <script>
 	var episodes = [
-		"Mr. Big", "Diplomat's Daughter", "School Days", "Our Man in Toyland",
-		"Now You See Him... Now You Don't", "Washington 4, Indians 3",
-		"KAOS in CONTROL", "The Day Smart Turned Chicken", "Satan Place",
-		"Our Man in Leotards", "Too Many Chiefs", "My Nephew the Spy",
-		"Aboard the Orient Express", "Weekend Vampire", "Survival of the Fattest",
-		"Double Agent", "Kisses for KAOS", "The Dead Spy Scrawls",
-		"Back to the Old Drawing Board", "All in the Mind", "Dear Diary",
-		"Smart, the Assassin", "I'm Only Human", "Stakeout on Blue Myst Mountain",
-		"The Amazing Harry Hoo", "Hubert's Unfinished Symphony", "Ship of Spies - Pt1",
-		"Ship of Spies - Pt2", "Shipment to Beirut", "The Last One in is a Rotten Spy"
+		"Mr.%20Big", "Diplomat%27s%20Daughter", "School%20Days", "Our%20Man%20in%20Toyland",
+		"Now%20You%20See%20Him...%20Now%20You%20Don%27t", "Washington%204%2C%20Indians%203",
+		"KAOS%20in%20CONTROL", "The%20Day%20Smart%20Turned%20Chicken", "Satan%20Place",
+		"Our%20Man%20in%20Leotards", "Too%20Many%20Chiefs", "My%20Nephew%20the%20Spy",
+		"Aboard%20the%20Orient%20Express", "Weekend%20Vampire", "Survival%20of%20the%20Fattest",
+		"Double%20Agent", "Kisses%20for%20KAOS", "The%20Dead%20Spy%20Scrawls",
+		"Back%20to%20the%20Old%20Drawing%20Board", "All%20in%20the%20Mind", "Dear%20Diary",
+		"Smart%2C%20the%20Assassin", "I%27m%20Only%20Human", "Stakeout%20on%20Blue%20Mist%20Mountain",
+		"The%20Amazing%20Harry%20Hoo", "Hubert%27s%20Unfinished%20Symphony", "Ship%20of%20Spies%20-%20Pt1",
+		"Ship%20of%20Spies%20-%20Pt2", "Shipment%20to%20Beirut", "The%20Last%20One%20in%20is%20a%20Rotten%20Spy"
 	];
 
+	var player;
 	var currentLinkElement = null;
 
 	function buildPlaylistTable(tbodyId, isWebOptimised) {
@@ -37,21 +38,17 @@
 			a.textContent = "E" + epNum;
 			
 			var suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
-			var rawFileName = "Get Smart S01E" + epNum + " (" + episodes[i] + ")" + suffix;
+			var fullUrl = "https://archive.org" + epNum + "%20%28" + episodes[i] + "%29" + suffix;
 			
-			var safeEncodedFile = encodeURIComponent(rawFileName)
-				.replace(/%20/g, "%20")
-				.replace(/\(/g, "%28")
-				.replace(/\)/g, "%29")
-				.replace(/'/g, "%27");
-
-			a.setAttribute('data-video', safeEncodedFile);
+			a.setAttribute('data-video', fullUrl);
 			a.setAttribute('data-index', i);
 			a.setAttribute('data-type', isWebOptimised ? 'web' : 'orig');
 
+			// FIXED: We pass 'a' directly to preserve the exact button instance instead of using 'this'
 			a.addEventListener('click', function(event) {
 				event.preventDefault();
-				playVideo(this);
+				var clickedAnchor = event.currentTarget || this;
+				playVideo(clickedAnchor);
 			});
 
 			td.appendChild(a);
@@ -60,59 +57,41 @@
 	}
 
 	function playVideo(linkElement) {
-		if (!linkElement) return;
+		// Error handling check ensures the script stops if a blank context drops in
+		if (!linkElement || !linkElement.getAttribute) return;
+		
 		if (currentLinkElement) currentLinkElement.classList.remove('active');
 		
 		currentLinkElement = linkElement;
 		currentLinkElement.classList.add('active');
 		
-		var fileName = currentLinkElement.getAttribute('data-video');
-		var fullTargetUrl = "https://archive.org" + fileName;
+		var targetVideoUrl = currentLinkElement.getAttribute('data-video');
 		
-		// TARGET FIX: Select the outer container wrapper frame out of the DOM layout
-		var wrapper = document.getElementById('player-wrapper');
-		
-		// Purge the old broken video element block entirely to clear the TV hardware decoder cache
-		wrapper.innerHTML = "";
-		
-		// Construct a completely brand new native player object dynamically
-		var newPlayer = document.createElement('video');
-		newPlayer.id = "tv-player";
-		newPlayer.controls = true;
-		newPlayer.preload = "auto";
-		newPlayer.src = fullTargetUrl;
-		
-		// Re-bind the continuous autoplay daemon onto the freshly initialized element object
-		newPlayer.addEventListener('ended', handleVideoEnded);
-		
-		// Append the fresh node into the layout tree safely
-		wrapper.appendChild(newPlayer);
-		
-		// Fire execution command strings via delayed hardware buffering protocols
-		setTimeout(function() {
-			newPlayer.play();
-		}, 300);
+		player.src = targetVideoUrl;
+		player.load();
+		player.play();
 		
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	// Automated continuous autoplay sequence callback handler loops safely
-	function handleVideoEnded() {
-		if (!currentLinkElement) return;
-		
-		var currentIndex = parseInt(currentLinkElement.getAttribute('data-index'), 10);
-		var currentType = currentLinkElement.getAttribute('data-type');
-		var nextIndex = currentIndex + 1;
-		
-		var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
-		if (nextLink) {
-			playVideo(nextLink);
-		}
-	}
-
 	function initApp() {
+		player = document.getElementById('tv-player');
+		
 		buildPlaylistTable('table-web', true);
 		buildPlaylistTable('table-orig', false);
+
+		player.addEventListener('ended', function() {
+			if (!currentLinkElement) return;
+			
+			var currentIndex = parseInt(currentLinkElement.getAttribute('data-index'), 10);
+			var currentType = currentLinkElement.getAttribute('data-type');
+			var nextIndex = currentIndex + 1;
+			
+			var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
+			if (nextLink) {
+				playVideo(nextLink);
+			}
+		});
 	}
 
 	if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -120,23 +99,13 @@
 	} else {
 		window.addEventListener('load', initApp);
 	}
-</script>
 
 <style>
 	body { background: #121212; color: #ffffff; font-family: sans-serif; text-align: center; margin: 0; padding: 10px; }
 	h1 { color: #e74c3c; margin: 5px 0; font-size: 1.8rem; }
 	.subtitle { color: #888; margin: 0 0 15px 0; font-size: 1rem; }
-	
-	/* Fixed-size wrapper container ensures the box doesn't jump during TV replacement operations */
-	.player-container { 
-		max-width: 700px; 
-		height: 394px; 
-		margin: 0 auto 15px auto; 
-		background: #000000; 
-		border: 2px solid #333; 
-		position: relative;
-	}
-	video { display: block; width: 100%; height: 100%; background: #000000; }
+	.player-container { max-width: 700px; margin: 0 auto 15px auto; background: #000000; border: 2px solid #333; }
+	video { display: block; width: 100%; height: auto; background: #000000; }
 	
 	table { width: 100%; max-width: 430px; margin: 0 auto 20px auto; border-collapse: separate; border-spacing: 5px; }
 	th { color: #3498db; padding-bottom: 5px; font-size: 1.1rem; border-bottom: 1px solid #333; }
@@ -153,8 +122,7 @@
 <h1>GET SMART</h1>
 <p class="subtitle">Season 1 Control Center</p>
 
-<!-- FIXED: Added an immutable structural wrapper box to isolate player replacement processes -->
-<div class="player-container" id="player-wrapper">
+<div class="player-container">
 	<video id="tv-player" controls preload="none" src=""></video>
 </div>
 
