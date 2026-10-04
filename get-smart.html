@@ -63,9 +63,15 @@
 	}
 
 	function attachHandlers(video) {
+		// Errors from <source> children fire on the <source>, not the <video>
+		var src = video.getElementsByTagName('source')[0];
+		if (src) {
+			src.addEventListener('error', function() {
+				setStatus('Source error | ' + src.src);
+			});
+		}
 		video.addEventListener('error', function() {
-			var code = video.error ? video.error.code : '?';
-			setStatus('Error ' + code + ' | ' + video.src);
+			setStatus('Error ' + (video.error ? video.error.code : '?'));
 		});
 		video.addEventListener('loadedmetadata', function() {
 			setStatus('Loaded ' + video.videoWidth + 'x' + video.videoHeight);
@@ -75,18 +81,16 @@
 		});
 		video.addEventListener('ended', function() {
 			if (!currentLinkElement) return;
-
 			var nextIndex = parseInt(currentLinkElement.getAttribute('data-index'), 10) + 1;
 			var currentType = currentLinkElement.getAttribute('data-type');
-
 			var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
 			if (nextLink) {
-				playVideo(nextLink);
+				playVideo(nextLink, true); // true = try autoplay for the next episode
 			}
 		});
 	}
 
-	function playVideo(linkElement) {
+	function playVideo(linkElement, tryAutoplay) {
 		if (!linkElement) return;
 		if (currentLinkElement) currentLinkElement.classList.remove('active');
 
@@ -96,10 +100,11 @@
 		var rootDomain = "https://" + "archive.org/";
 		var fullTargetUrl = rootDomain + currentLinkElement.getAttribute('data-video');
 
-		// Build a fresh <video> with src already in the markup, rather than
-		// setting src from JS and calling load()/play() on a reused element.
 		var box = document.getElementById('player-box');
-		box.innerHTML = '<video id="tv-player" controls autoplay preload="auto" src="' + fullTargetUrl + '"></video>';
+		box.innerHTML = '<video id="tv-player" width="100%" height="auto" controls preload="auto"' +
+			(tryAutoplay ? ' autoplay' : '') + '>' +
+			'<source src="' + fullTargetUrl + '" type="video/mp4">' +
+			'Your browser does not support streaming.</video>';
 
 		player = document.getElementById('tv-player');
 		attachHandlers(player);
