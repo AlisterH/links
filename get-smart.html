@@ -124,6 +124,20 @@
 
 		buildPlaylistTable('table-web', true);
 		buildPlaylistTable('table-orig', false);
+		document.addEventListener('keydown', function(e) {
+			var key = e.key || '';
+			if (key === 'f' || key === 'F' || e.keyCode === 70) {
+				goFullscreen();
+				e.preventDefault();
+			}
+		});
+		function goFullscreen() {
+			var v = document.getElementById('tv-player');
+			if (!v) return;
+			if (v.requestFullscreen) v.requestFullscreen();
+			else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
+			else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+		}
 	}
 
 	if (document.readyState === "complete" || document.readyState === "interactive") {
