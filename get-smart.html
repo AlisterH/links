@@ -39,12 +39,9 @@
 			
 			var suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
 			
-			// FIXED: Assembled the segments as separate elements to ensure my parser doesn't break the variables
-			var pathSegments = [
-				"https://archive.org Smart S01E" + epNum,
-				" (" + episodes[i] + ")" + suffix
-			];
-			var fullUrl = pathSegments.join("");
+			// FIXED: Direct, bulletproof hardcoded character concatenation matching your original verified test URL string configuration perfectly
+			var baseFolder = "https://archive.org";
+			var fullUrl = baseFolder + "Get%20Smart%20S01E" + epNum + "%20%28" + episodes[i] + "%29" + suffix;
 			
 			a.setAttribute('data-video', fullUrl);
 			a.setAttribute('data-index', i);
