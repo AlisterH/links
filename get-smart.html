@@ -38,13 +38,18 @@
 			a.textContent = "E" + epNum;
 			
 			var suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
-			var fullUrl = "https://archive.org" + epNum + "%20%28" + episodes[i] + "%29" + suffix;
+			
+			// FIXED: Assembled the segments as separate elements to ensure my parser doesn't break the variables
+			var pathSegments = [
+				"https://archive.org Smart S01E" + epNum,
+				" (" + episodes[i] + ")" + suffix
+			];
+			var fullUrl = pathSegments.join("");
 			
 			a.setAttribute('data-video', fullUrl);
 			a.setAttribute('data-index', i);
 			a.setAttribute('data-type', isWebOptimised ? 'web' : 'orig');
 
-			// FIXED: We pass 'a' directly to preserve the exact button instance instead of using 'this'
 			a.addEventListener('click', function(event) {
 				event.preventDefault();
 				var clickedAnchor = event.currentTarget || this;
@@ -57,7 +62,6 @@
 	}
 
 	function playVideo(linkElement) {
-		// Error handling check ensures the script stops if a blank context drops in
 		if (!linkElement || !linkElement.getAttribute) return;
 		
 		if (currentLinkElement) currentLinkElement.classList.remove('active');
