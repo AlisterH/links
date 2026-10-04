@@ -54,7 +54,6 @@
 	let currentLinkElement = null;
 
 	// DYNAMIC LINK GENERATOR ENGINE
-	// This instantly programmatically constructs the required clean text grids
 	function generateGrid(containerId, isWebOptimised) {
 		const container = document.getElementById(containerId);
 		episodes.forEach((epName, index) => {
@@ -68,7 +67,7 @@
 			
 			// Formulate the base URL dynamically on click rather than serving hardcoded strings
 			const suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
-			const fullUrl = `https://archive.org{epNum}%20%28${epName}%29${suffix}`;
+			const fullUrl = `https://archive.org/download/get-smart/Get%20Smart%20S01E${epNum}%20%28${epName}%29${suffix}`;
 			a.setAttribute('data-video', fullUrl);
 
 			a.addEventListener('click', function(event) {
