@@ -3,4 +3,4 @@
 title: test
 ---
 
-{% include_relative get-smart.md %}
+{% include_relative get-smart.html %}

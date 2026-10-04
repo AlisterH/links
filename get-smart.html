@@ -1,0 +1,232 @@
+<style>
+	/* Dark theme styling designed for large TV viewing layouts */
+	body { 
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+		background: #121212; 
+		color: #ffffff; 
+		padding: 20px; 
+		margin: 0;
+	}
+	h1, h2 { 
+		text-align: center; 
+		color: #e74c3c;
+		margin-bottom: 5px;
+	}
+	.subtitle {
+		text-align: center;
+		color: #888;
+		margin-top: 0;
+		margin-bottom: 25px;
+		font-size: 1.1rem;
+	}
+	.player-container { 
+		max-width: 900px; 
+		margin: 0 auto 30px auto; 
+		background: #000000;
+		border: 3px solid #222;
+		border-radius: 8px;
+		overflow: hidden;
+		box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+	}
+	video { 
+		display: block; 
+	}
+	.columns-wrapper {
+		display: flex;
+		max-width: 1100px;
+		margin: 0 auto;
+		gap: 30px;
+	}
+	.column {
+		flex: 1;
+		background: #1c1c1c;
+		padding: 15px;
+		border-radius: 8px;
+	}
+	.column h3 {
+		border-bottom: 2px solid #333;
+		padding-bottom: 8px;
+		margin-top: 0;
+		color: #3498db;
+	}
+	.playlist { 
+		list-style: none; 
+		padding: 0; 
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+		gap: 10px;
+	}
+	.video-link { 
+		display: block; 
+		color: #ffffff; 
+		text-decoration: none; 
+		padding: 12px 5px; 
+		background: #2a2a2a; 
+		border-radius: 4px; 
+		font-size: 1.1rem; 
+		font-weight: bold;
+		text-align: center;
+		border: 2px solid transparent;
+		transition: all 0.2s ease;
+	}
+	/* Navigation visual anchors for Smart TV remote control arrow targets */
+	.video-link:focus, .video-link:hover { 
+		background: #3498db; 
+		color: #ffffff; 
+		border-color: #fff;
+		outline: none; 
+		transform: scale(1.05);
+	}
+	/* Style rule indicating which video element is currently playing */
+	.video-link.active {
+		background: #2ecc71 !important;
+		color: #000000 !important;
+		border-color: #ffffff;
+	}
+</style>
+
+<h1>GET SMART</h1>
+<p class="subtitle">Season 1 Control Center</p>
+
+<!-- 1. VIDEO PLAYER METADATA ENGINE -->
+<div class="player-container">
+	<video id="tv-player" width="100%" height="auto" controls preload="auto">
+		<source id="player-source" src="" type="video/mp4">
+		Your TV browser does not support HTML5 mp4 media streaming features.
+	</video>
+</div>
+
+<!-- 2. SYSTEM INTERFACE PLAYLIST COLUMNS -->
+<div class="columns-wrapper">
+	
+	<!-- COLUMN A: WEB OPTIMISED LIST -->
+	<div class="column">
+		<h3>Web Optimised Episodes</h3>
+		<ul class="playlist">
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E01%20%28Mr.%20Big%29.ia.mp4">S01E01</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E02%20%28Diplomat%27s%20Daughter%29.ia.mp4">S01E02</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E03%20%28School%20Days%29.ia.mp4">S01E03</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E04%20%28Our%20Man%20in%20Toyland%29.ia.mp4">S01E04</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E05%20%28Now%20You%20See%20Him...%20Now%20You%20Don%27t%29.ia.mp4">S01E05</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E06%20%28Washington%204%2C%20Indians%203%29.ia.mp4">S01E06</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E07%20%28KAOS%20in%20CONTROL%29.ia.mp4">S01E07</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E08%20%28The%20Day%20Smart%20Turned%20Chicken%29.ia.mp4">S01E08</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E09%20%28Satan%20Place%29.ia.mp4">S01E09</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E10%20%28Our%20Man%20in%20Leotards%29.ia.mp4">S01E10</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E11%20%28Too%20Many%20Chiefs%29.ia.mp4">S01E11</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E12%20%28My%20Nephew%20the%20Spy%29.ia.mp4">S01E12</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E13%20%28Aboard%20the%20Orient%20Express%29.ia.mp4">S01E13</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E14%20%28Weekend%20Vampire%29.ia.mp4">S01E14</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E15%20%28Survival%20of%20the%20Fattest%29.ia.mp4">S01E15</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E16%20%28Double%20Agent%29.ia.mp4">S01E16</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E17%20%28Kisses%20for%20KAOS%29.ia.mp4">S01E17</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E18%20%28The%20Dead%20Spy%20Scrawls%29.ia.mp4">S01E18</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E19%20%28Back%20to%20the%20Old%20Drawing%20Board%29.ia.mp4">S01E19</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E20%20%28All%20in%20the%20Mind%29.ia.mp4">S01E20</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E21%20%28Dear%20Diary%29.ia.mp4">S01E21</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E22%20%28Smart%2C%20the%20Assassin%29.ia.mp4">S01E22</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E23%20%28I%27m%20Only%20Human%29.ia.mp4">S01E23</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E24%20%28Stakeout%20on%20Blue%20Mist%20Mountain%29.ia.mp4">S01E24</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E25%20%28The%20Amazing%20Harry%20Hoo%29.ia.mp4">S01E25</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E26%20%28Hubert%27s%20Unfinished%20Symphony%29.ia.mp4">S01E26</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E27%20%28Ship%20of%20Spies%20-%20Pt1%29.ia.mp4">S01E27</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E28%20%28Ship%20of%20Spies%20-%20Pt2%29.ia.mp4">S01E28</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E29%20%28Shipment%20to%20Beirut%29.ia.mp4">S01E29</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E30%20%28The%20Last%20One%20in%20is%20a%20Rotten%20Spy%29.ia.mp4">S01E30</a></li>
+		</ul>
+	</div>
+
+	<!-- COLUMN B: ORIGINAL RESOLUTION LIST -->
+	<div class="column">
+		<h3>Original Resolution</h3>
+		<ul class="playlist">
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E01%20%28Mr.%20Big%29.mp4">S01E01</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E02%20%28Diplomat%27s%20Daughter%29.mp4">S01E02</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E03%20%28School%20Days%29.mp4">S01E03</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E04%20%28Our%20Man%20in%20Toyland%29.mp4">S01E04</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E05%20%28Now%20You%20See%20Him...%20Now%20You%20Don%27t%29.mp4">S01E05</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E06%20%28Washington%204%2C%20Indians%203%29.mp4">S01E06</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E07%20%28KAOS%20in%20CONTROL%29.mp4">S01E07</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E08%20%28The%20Day%20Smart%20Turned%20Chicken%29.mp4">S01E08</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E09%20%28Satan%20Place%29.mp4">S01E09</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E10%20%28Our%20Man%20in%20Leotards%29.mp4">S01E10</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E11%20%28Too%20Many%20Chiefs%29.mp4">S01E11</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E12%20%28My%20Nephew%20the%20Spy%29.mp4">S01E12</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E13%20%28Aboard%20the%20Orient%20Express%29.mp4">S01E13</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E14%20%28Weekend%20Vampire%29.mp4">S01E14</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E15%20%28Survival%20of%20the%20Fattest%29.mp4">S01E15</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E16%20%28Double%20Agent%29.mp4">S01E16</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E17%20%28Kisses%20for%20KAOS%29.mp4">S01E17</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E18%20%28The%20Dead%20Spy%20Scrawls%29.mp4">S01E18</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E19%20%28Back%20to%20the%20Old%20Drawing%20Board%29.mp4">S01E19</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E20%20%28All%20in%20the%20Mind%29.mp4">S01E20</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E21%20%28Dear%20Diary%29.mp4">S01E21</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E22%20%28Smart%2C%20the%20Assassin%29.mp4">S01E22</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E23%20%28I%27m%20Only%20Human%29.mp4">S01E23</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E24%20%28Stakeout%20on%20Blue%20Mist%20Mountain%29.mp4">S01E24</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E25%20%28The%20Amazing%20Harry%20Hoo%29.mp4">S01E25</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E26%20%28Hubert%27s%20Unfinished%20Symphony%29.mp4">S01E26</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E27%20%28Ship%20of%20Spies%20-%20Pt1%29.mp4">S01E27</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E28%20%28Ship%20of%20Spies%20-%20Pt2%29.mp4">S01E28</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E29%20%28Shipment%20to%20Beirut%29.mp4">S01E29</a></li>
+			<li><a href="#" class="video-link" data-video="https://archive.org/download/get-smart/Get%20Smart%20S01E30%20%28The%20Last%20One%20in%20is%20a%20Rotten%20Spy%29.mp4">S01E30</a></li>
+		</ul>
+	</div>
+</div>
+
+<script>
+	const player = document.getElementById('tv-player');
+	const source = document.getElementById('player-source');
+	let currentLinkElement = null;
+
+	// Function that targets and executes video asset playback swaps
+	function playVideo(linkElement) {
+		if (!linkElement) return;
+
+		// Remove active status highlights from old elements
+		if (currentLinkElement) {
+			currentLinkElement.classList.remove('active');
+		}
+
+		currentLinkElement = linkElement;
+		currentLinkElement.classList.add('active');
+
+		// Swap out video source targets
+		const targetVideoUrl = currentLinkElement.getAttribute('data-video');
+		source.src = targetVideoUrl;
+		
+		player.load();
+		player.play();
+
+		// Automatically push browser viewpoint back to top to track player window
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
+	// Catch and process initial manual user click selections across link lists
+	document.querySelectorAll('.video-link').forEach(link => {
+		link.addEventListener('click', function(event) {
+			event.preventDefault(); 
+			playVideo(this);
+		});
+	});
+
+	// AUTOMATIC AUTOPLAY DAEMON: Fired immediately when player engine signals media completion
+	player.addEventListener('ended', function() {
+		if (!currentLinkElement) return;
+
+		// Locate containing list hierarchy block parent tracking
+		const currentLi = currentLinkElement.closest('li');
+		const nextLi = currentLi.nextElementSibling;
+
+		if (nextLi) {
+			// Fetch direct subsequent sibling connection link element structures
+			const nextLink = nextLi.querySelector('.video-link');
+			if (nextLink) {
+				playVideo(nextLink);
+			}
+		} else {
+			console.log("End of current playlist reached.");
+		}
+	});
+</script>
