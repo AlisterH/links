@@ -1,5 +1,4 @@
 <script>
-	// Full original titles restored to fix the broken paths
 	var episodes = [
 		"Mr. Big", "Diplomat's Daughter", "School Days", "Our Man in Toyland",
 		"Now You See Him... Now You Don't", "Washington 4, Indians 3",
@@ -13,7 +12,6 @@
 		"Ship of Spies - Pt2", "Shipment to Beirut", "The Last One in is a Rotten Spy"
 	];
 
-	var player;
 	var currentLinkElement = null;
 
 	function buildPlaylistTable(tbodyId, isWebOptimised) {
@@ -39,16 +37,13 @@
 			a.textContent = "E" + epNum;
 			
 			var suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
-			
-			// Formulate the EXACT unencoded filename matching the Archive.org directory
 			var rawFileName = "Get Smart S01E" + epNum + " (" + episodes[i] + ")" + suffix;
 			
-			// FIXED: Encodes spaces to %20 and brackets to safely pass through the TV's network card
 			var safeEncodedFile = encodeURIComponent(rawFileName)
-				.replace(/%20/g, "%20")  // Keep standard spaces
-				.replace(/\(/g, "%28")   // Safely translate opening brackets
-				.replace(/\)/g, "%29")   // Safely translate closing brackets
-				.replace(/'/g, "%27");   // Safely translate apostrophes
+				.replace(/%20/g, "%20")
+				.replace(/\(/g, "%28")
+				.replace(/\)/g, "%29")
+				.replace(/'/g, "%27");
 
 			a.setAttribute('data-video', safeEncodedFile);
 			a.setAttribute('data-index', i);
@@ -74,35 +69,50 @@
 		var fileName = currentLinkElement.getAttribute('data-video');
 		var fullTargetUrl = "https://archive.org" + fileName;
 		
-		player.src = fullTargetUrl;
-		player.load();
+		// TARGET FIX: Select the outer container wrapper frame out of the DOM layout
+		var wrapper = document.getElementById('player-wrapper');
 		
-		// Short timing delay to ensure legacy TV buffer caches process the media request smoothly
+		// Purge the old broken video element block entirely to clear the TV hardware decoder cache
+		wrapper.innerHTML = "";
+		
+		// Construct a completely brand new native player object dynamically
+		var newPlayer = document.createElement('video');
+		newPlayer.id = "tv-player";
+		newPlayer.controls = true;
+		newPlayer.preload = "auto";
+		newPlayer.src = fullTargetUrl;
+		
+		// Re-bind the continuous autoplay daemon onto the freshly initialized element object
+		newPlayer.addEventListener('ended', handleVideoEnded);
+		
+		// Append the fresh node into the layout tree safely
+		wrapper.appendChild(newPlayer);
+		
+		// Fire execution command strings via delayed hardware buffering protocols
 		setTimeout(function() {
-			player.play();
+			newPlayer.play();
 		}, 300);
 		
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	function initApp() {
-		player = document.getElementById('tv-player');
+	// Automated continuous autoplay sequence callback handler loops safely
+	function handleVideoEnded() {
+		if (!currentLinkElement) return;
 		
+		var currentIndex = parseInt(currentLinkElement.getAttribute('data-index'), 10);
+		var currentType = currentLinkElement.getAttribute('data-type');
+		var nextIndex = currentIndex + 1;
+		
+		var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
+		if (nextLink) {
+			playVideo(nextLink);
+		}
+	}
+
+	function initApp() {
 		buildPlaylistTable('table-web', true);
 		buildPlaylistTable('table-orig', false);
-
-		player.addEventListener('ended', function() {
-			if (!currentLinkElement) return;
-			
-			var currentIndex = parseInt(currentLinkElement.getAttribute('data-index'), 10);
-			var currentType = currentLinkElement.getAttribute('data-type');
-			var nextIndex = currentIndex + 1;
-			
-			var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
-			if (nextLink) {
-				playVideo(nextLink);
-			}
-		});
 	}
 
 	if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -116,8 +126,17 @@
 	body { background: #121212; color: #ffffff; font-family: sans-serif; text-align: center; margin: 0; padding: 10px; }
 	h1 { color: #e74c3c; margin: 5px 0; font-size: 1.8rem; }
 	.subtitle { color: #888; margin: 0 0 15px 0; font-size: 1rem; }
-	.player-container { max-width: 700px; margin: 0 auto 15px auto; background: #000000; border: 2px solid #333; }
-	video { display: block; width: 100%; height: auto; background: #000000; }
+	
+	/* Fixed-size wrapper container ensures the box doesn't jump during TV replacement operations */
+	.player-container { 
+		max-width: 700px; 
+		height: 394px; 
+		margin: 0 auto 15px auto; 
+		background: #000000; 
+		border: 2px solid #333; 
+		position: relative;
+	}
+	video { display: block; width: 100%; height: 100%; background: #000000; }
 	
 	table { width: 100%; max-width: 430px; margin: 0 auto 20px auto; border-collapse: separate; border-spacing: 5px; }
 	th { color: #3498db; padding-bottom: 5px; font-size: 1.1rem; border-bottom: 1px solid #333; }
@@ -134,7 +153,8 @@
 <h1>GET SMART</h1>
 <p class="subtitle">Season 1 Control Center</p>
 
-<div class="player-container">
+<!-- FIXED: Added an immutable structural wrapper box to isolate player replacement processes -->
+<div class="player-container" id="player-wrapper">
 	<video id="tv-player" controls preload="none" src=""></video>
 </div>
 
