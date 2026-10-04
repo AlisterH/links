@@ -1,4 +1,5 @@
 # web optimised
+{% include player.html url="https://archive.org/download/get-smart/Get%20Smart%20S01E09%20%28Satan%20Place%29.ia.mp4" %}
 [S01E01](https://archive.org/download/get-smart/Get%20Smart%20S01E01%20%28Mr.%20Big%29.ia.mp4)  
 [S01E02](https://archive.org/download/get-smart/Get%20Smart%20S01E02%20%28Diplomat%27s%20Daughter%29.ia.mp4)  
 [S01E03](https://archive.org/download/get-smart/Get%20Smart%20S01E03%20%28School%20Days%29.ia.mp4)  
