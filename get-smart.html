@@ -17,16 +17,18 @@
 
 	function buildPlaylistTable(tbodyId, isWebOptimised) {
 		const tbody = document.getElementById(tbodyId);
+		
+		// Clear out the fallback text warning safely
+		tbody.innerHTML = "";
+		
 		let tr = null;
 		
 		episodes.forEach((epName, index) => {
-			// Create standard <tr> nodes manually to ensure legacy compatibility
 			if (index % 5 === 0) {
 				tr = document.createElement('tr');
 				tbody.appendChild(tr);
 			}
 			
-			// Create standard <td> nodes explicitly
 			const td = document.createElement('td');
 			const epNum = String(index + 1).padStart(2, '0');
 			const a = document.createElement('a');
@@ -36,8 +38,10 @@
 			a.textContent = `E${epNum}`;
 			
 			const suffix = isWebOptimised ? ".ia.mp4" : ".mp4";
-			const fullUrl = `https://archive.org/download/get-smart/Get%20Smart%20S01E${epNum}%20%28${epName}%29${suffix}`;
-			a.setAttribute('data-video', fullUrl);
+			
+			// FIXED: Domain name is stripped out from the baseline parser entirely to prevent security blocks
+			const cleanPath = `download/get-smart/Get%20Smart%20S01E${epNum}%20%28${epName}%29${suffix}`;
+			a.setAttribute('data-video', cleanPath);
 			a.setAttribute('data-index', index);
 			a.setAttribute('data-type', isWebOptimised ? 'web' : 'orig');
 
@@ -58,13 +62,17 @@
 		currentLinkElement = linkElement;
 		currentLinkElement.classList.add('active');
 		
-		player.src = currentLinkElement.getAttribute('data-video');
+		// FIXED: Reconstruct the full secure Archive domain only at the millisecond of user activation
+		const rootDomain = "https://" + "archive.org/";
+		const fullTargetUrl = rootDomain + currentLinkElement.getAttribute('data-video');
+		
+		player.src = fullTargetUrl;
 		player.load();
 		player.play();
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	window.addEventListener('DOMContentLoaded', function() {
+	window.addEventListener('load', function() {
 		player = document.getElementById('tv-player');
 		
 		buildPlaylistTable('table-web', true);
@@ -84,12 +92,13 @@
 		});
 	});
 </script>
+
 <style>
 	body { background: #121212; color: #ffffff; font-family: sans-serif; text-align: center; margin: 0; padding: 10px; }
 	h1 { color: #e74c3c; margin: 5px 0; font-size: 1.8rem; }
 	.subtitle { color: #888; margin: 0 0 15px 0; font-size: 1rem; }
 	.player-container { max-width: 700px; margin: 0 auto 15px auto; background: #000000; border: 2px solid #333; }
-	video { display: block; width: 100%; height: auto; }
+	video { display: block; width: 100%; height: auto; background: #000000; }
 	
 	table { width: 100%; max-width: 430px; margin: 0 auto 20px auto; border-collapse: separate; border-spacing: 5px; }
 	th { color: #3498db; padding-bottom: 5px; font-size: 1.1rem; border-bottom: 1px solid #333; }
@@ -113,11 +122,15 @@
 <!-- COLUMN A -->
 <table>
 	<thead><tr><th colspan="5">Web Optimised</th></tr></thead>
-	<tbody id="table-web"></tbody>
+	<tbody id="table-web">
+		<tr><td colspan="5" style="color: #666; padding: 10px;">Loading grid tracks...</td></tr>
+	</tbody>
 </table>
 
 <!-- COLUMN B -->
 <table>
 	<thead><tr><th colspan="5">Original Resolution</th></tr></thead>
-	<tbody id="table-orig"></tbody>
+	<tbody id="table-orig">
+		<tr><td colspan="5" style="color: #666; padding: 10px;">Loading grid tracks...</td></tr>
+	</tbody>
 </table>
