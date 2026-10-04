@@ -126,7 +126,11 @@
 		buildPlaylistTable('table-orig', false);
 		document.addEventListener('keydown', function(e) {
 			var key = e.key || '';
-			if (key === 'f' || key === 'F' || e.keyCode === 70) {
+			var code = e.keyCode;
+			if (key === ' ' || key === 'Spacebar' || code === 32) {
+				togglePlayPause();
+				e.preventDefault();
+			} else if (key === 'f' || key === 'F' || code === 70) {
 				goFullscreen();
 				e.preventDefault();
 			}
@@ -137,6 +141,15 @@
 			if (v.requestFullscreen) v.requestFullscreen();
 			else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
 			else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+		}
+		function togglePlayPause() {
+			if (!player) return;
+			if (player.paused) {
+				var p = player.play();
+				if (p && p.catch) p.catch(function () {});
+			} else {
+				player.pause();
+			}
 		}
 	}
 
