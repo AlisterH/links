@@ -1,4 +1,4 @@
-*web optimised*
+# web optimised
 https://archive.org/download/get-smart/Get%20Smart%20S01E01%20%28Mr.%20Big%29.ia.mp4
 https://archive.org/download/get-smart/Get%20Smart%20S01E02%20%28Diplomat%27s%20Daughter%29.ia.mp4
 https://archive.org/download/get-smart/Get%20Smart%20S01E03%20%28School%20Days%29.ia.mp4
@@ -29,7 +29,7 @@ https://archive.org/download/get-smart/Get%20Smart%20S01E27%20%28Ship%20of%20Spi
 https://archive.org/download/get-smart/Get%20Smart%20S01E28%20%28Ship%20of%20Spies%20-%20Pt2%29.ia.mp4
 https://archive.org/download/get-smart/Get%20Smart%20S01E29%20%28Shipment%20to%20Beirut%29.ia.mp4
 https://archive.org/download/get-smart/Get%20Smart%20S01E30%20%28The%20Last%20One%20in%20is%20a%20Rotten%20Spy%29.ia.mp4
-*Original*
+# Original
 https://archive.org/download/get-smart/Get%20Smart%20S01E01%20%28Mr.%20Big%29.mp4
 https://archive.org/download/get-smart/Get%20Smart%20S01E02%20%28Diplomat%27s%20Daughter%29.mp4
 https://archive.org/download/get-smart/Get%20Smart%20S01E03%20%28School%20Days%29.mp4
