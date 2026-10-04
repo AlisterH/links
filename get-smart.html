@@ -1,5 +1,4 @@
 <script>
-	// Array mapping out the unique episode subtitles/names inside the archive.org paths
 	var episodes = [
 		"Mr.%20Big", "Diplomat%27s%20Daughter", "School%20Days", "Our%20Man%20in%20Toyland",
 		"Now%20You%20See%20Him...%20Now%20You%20Don%27t", "Washington%204%2C%20Indians%203",
@@ -20,19 +19,20 @@
 		var tbody = document.getElementById(tbodyId);
 		if (!tbody) return;
 		
-		tbody.innerHTML = ""; // Wipe the warning clean
+		tbody.innerHTML = ""; // Clear fallback warning text
 		var tr = null;
 		
-		episodes.forEach(function(epName, index) {
-			if (index % 5 === 0) {
+		// FIXED: Swapped out modern unsupported .forEach for a standard low-level for loop
+		for (var i = 0; i < episodes.length; i++) {
+			var epName = episodes[i];
+			
+			if (i % 5 === 0) {
 				tr = document.createElement('tr');
 				tbody.appendChild(tr);
 			}
 			
 			var td = document.createElement('td');
-			
-			// FIXED: Stripped padStart completely out and replaced with plain math padding
-			var trueNum = index + 1;
+			var trueNum = i + 1;
 			var epNum = (trueNum < 10) ? ("0" + trueNum) : String(trueNum);
 			
 			var a = document.createElement('a');
@@ -44,7 +44,7 @@
 			var cleanPath = "download/get-smart/Get%20Smart%20S01E" + epNum + "%20%28" + epName + "%29" + suffix;
 			
 			a.setAttribute('data-video', cleanPath);
-			a.setAttribute('data-index', index);
+			a.setAttribute('data-index', i);
 			a.setAttribute('data-type', isWebOptimised ? 'web' : 'orig');
 
 			a.addEventListener('click', function(event) {
@@ -54,7 +54,7 @@
 
 			td.appendChild(a);
 			tr.appendChild(td);
-		});
+		}
 	}
 
 	function playVideo(linkElement) {
@@ -86,6 +86,7 @@
 			var currentType = currentLinkElement.getAttribute('data-type');
 			var nextIndex = currentIndex + 1;
 			
+			// FIXED: Concatenated the string manually for old querySelector implementation versions
 			var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
 			if (nextLink) {
 				playVideo(nextLink);
