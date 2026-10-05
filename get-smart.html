@@ -70,15 +70,15 @@
 		if (src) {
 			src.addEventListener('error', function() {
 				if (player !== video) return; // stale event from an old element
-				if (retryCount < 12) {
+				if (retryCount < 20) {
 					retryCount++;
-					setStatus('Source error, retry ' + retryCount + ' of 12...');
+					setStatus('Source error, retry ' + retryCount + ' of 20...');
 					retryTimer = setTimeout(function() {
 						retryTimer = null;
 						playVideo(currentLinkElement, true, true);
 					}, 1500);
 				} else {
-					setStatus('Source error after 3 tries | ' + src.src);
+					setStatus('Source error after 20 tries | ' + src.src);
 				}
 			});
 		}
