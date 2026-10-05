@@ -70,9 +70,9 @@
 		if (src) {
 			src.addEventListener('error', function() {
 				if (player !== video) return; // stale event from an old element
-				if (retryCount < 3) {
+				if (retryCount < 12) {
 					retryCount++;
-					setStatus('Source error, retry ' + retryCount + ' of 3...');
+					setStatus('Source error, retry ' + retryCount + ' of 12...');
 					retryTimer = setTimeout(function() {
 						retryTimer = null;
 						playVideo(currentLinkElement, false, true);
@@ -97,7 +97,7 @@
 			var currentType = currentLinkElement.getAttribute('data-type');
 			var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
 			if (nextLink) {
-				playVideo(nextLink, true); // true = try autoplay for the next episode
+				playVideo(nextLink, false); // true = try autoplay for the next episode
 			}
 		});
 	}
