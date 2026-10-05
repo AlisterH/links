@@ -51,7 +51,7 @@
 
 			a.addEventListener('click', function(event) {
 				event.preventDefault();
-				playVideo(this);
+				playVideo(this, true);
 			});
 
 			td.appendChild(a);
@@ -75,7 +75,7 @@
 					setStatus('Source error, retry ' + retryCount + ' of 12...');
 					retryTimer = setTimeout(function() {
 						retryTimer = null;
-						playVideo(currentLinkElement, false, true);
+						playVideo(currentLinkElement, true, true);
 					}, 1500);
 				} else {
 					setStatus('Source error after 3 tries | ' + src.src);
@@ -97,7 +97,7 @@
 			var currentType = currentLinkElement.getAttribute('data-type');
 			var nextLink = document.querySelector('.video-link[data-type="' + currentType + '"][data-index="' + nextIndex + '"]');
 			if (nextLink) {
-				playVideo(nextLink, false); // true = try autoplay for the next episode
+				playVideo(nextLink, true); // true = try autoplay for the next episode
 			}
 		});
 	}
