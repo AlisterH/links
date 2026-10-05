@@ -135,9 +135,19 @@
 				e.preventDefault();
 			}
 		});
+		function centerPlayer() {
+			var box = document.getElementById('player-box');
+			if (!box) return;
+			var rect = box.getBoundingClientRect();
+			var viewH = window.innerHeight || document.documentElement.clientHeight;
+			var pageY = window.pageYOffset || document.documentElement.scrollTop || 0;
+			var target = pageY + rect.top - (viewH - rect.height) / 2;
+			window.scrollTo(0, Math.max(0, target)); // instant jump, not smooth
+		}
 		function goFullscreen() {
 			var v = document.getElementById('tv-player');
 			if (!v) return;
+			centerPlayer();
 			if (v.requestFullscreen) v.requestFullscreen();
 			else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
 			else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
