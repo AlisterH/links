@@ -15,6 +15,8 @@
 	var player = null;
 	var currentLinkElement = null;
 	var statusEl = null;
+	var retryCount = 0;
+	var retryTimer = null;
 
 	function buildPlaylistTable(tbodyId, isWebOptimised) {
 		var tbody = document.getElementById(tbodyId);
@@ -67,7 +69,17 @@
 		var src = video.getElementsByTagName('source')[0];
 		if (src) {
 			src.addEventListener('error', function() {
-				setStatus('Source error | ' + src.src);
+				if (player !== video) return; // stale event from an old element
+				if (retryCount < 3) {
+					retryCount++;
+					setStatus('Source error, retry ' + retryCount + ' of 3...');
+					retryTimer = setTimeout(function() {
+						retryTimer = null;
+						playVideo(currentLinkElement, false, true);
+					}, 1500);
+				} else {
+					setStatus('Source error after 3 tries | ' + src.src);
+				}
 			});
 		}
 		video.addEventListener('error', function() {
@@ -90,7 +102,11 @@
 		});
 	}
 
-	function playVideo(linkElement, tryAutoplay) {
+	function playVideo(linkElement, tryAutoplay, isRetry) {
+		if (!isRetry) {
+			retryCount = 0;
+			if (retryTimer) { clearTimeout(retryTimer); retryTimer = null; }
+		}
 		if (!linkElement) return;
 		if (currentLinkElement) currentLinkElement.classList.remove('active');
 
@@ -101,6 +117,7 @@
 		var fullTargetUrl = rootDomain + currentLinkElement.getAttribute('data-video');
 
 		var box = document.getElementById('player-box');
+		destroyPlayer();
 		box.innerHTML = '<video id="tv-player" width="100%" height="auto" controls preload="auto"' +
 			(tryAutoplay ? ' autoplay' : '') + '>' +
 			'<source src="' + fullTargetUrl + '" type="video/mp4">' +
@@ -161,6 +178,18 @@
 				player.pause();
 			}
 		}
+	}
+
+	function destroyPlayer() {
+		if (!player) return;
+		try {
+			player.pause();
+			var s = player.getElementsByTagName('source')[0];
+			if (s) s.removeAttribute('src');
+			player.removeAttribute('src');
+			player.load(); // forces the TV to release the old stream
+		} catch (e) {}
+		player = null;
 	}
 
 	if (document.readyState === "complete" || document.readyState === "interactive") {
